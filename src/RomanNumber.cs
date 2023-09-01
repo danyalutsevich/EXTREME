@@ -14,7 +14,7 @@ namespace App
 		{
 			return new()
 			{
-				Value = input == "I" ? 1 : input == "II" ? 2 : 0
+				Value = input.Length
 			};
 		}
 
