@@ -24,22 +24,22 @@ namespace App
 		public static RomanNumber Parse(string roman)
 		{
 			int result = 0;
-			int prevValue = 0;
+			int prev = 0;
 
 			for (int i = roman.Length - 1; i >= 0; i--)
 			{
-				int currentValue = romanValues[roman[i]];
+				int current = romanValues[roman[i]];
 
-				if (currentValue < prevValue)
+				if (current < prev)
 				{
-					result -= currentValue;
+					result -= current;
 				}
 				else
 				{
-					result += currentValue;
+					result += current;
 				}
 
-				prevValue = currentValue;
+				prev = current;
 			}
 
 			return new()
