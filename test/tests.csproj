@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\tests.csproj" />
+    <ProjectReference Include="..\src\code.csproj" />
   </ItemGroup>
 
 </Project>
