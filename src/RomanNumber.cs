@@ -37,7 +37,7 @@ namespace Code
 			int result = 0;
 			int prev = 0;
 			int lastDigitIndex = roman.StartsWith("-") ? 1 : 0;
-
+			roman = roman.Replace("-", "");
 			roman = roman.Trim();
 
 			if (string.IsNullOrEmpty(roman))

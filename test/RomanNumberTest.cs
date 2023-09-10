@@ -201,14 +201,11 @@ namespace Tests
 
 			for (int i = 0; i < 10; i++)
 			{
-				int testCase = rnd.Next(500);
+				int testCase = rnd.Next(-500,500);
 				var roman = new RomanNumber(testCase);
 				Assert.IsNotNull(testCase);
 				Assert.AreEqual(testCase, RomanNumber.Parse(roman.ToString()).Value);
 			}
-
-
-
 		}
 	}
 }

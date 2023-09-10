@@ -3,4 +3,6 @@ using Code;
 
 Console.WriteLine("Hello, World!");
 
-RomanNumber.Parse("ABCERTYUI");
+
+var roman = new RomanNumber(-4);
+Console.WriteLine(roman.ToString());
