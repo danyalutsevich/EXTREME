@@ -152,5 +152,63 @@ namespace Tests
 			}
 
 		}
+
+		[TestMethod]
+		public void TestParseInvalid()
+		{
+			Dictionary<String, char[]> testCases2 = new()
+			{
+				{ "12XC",  new[] { '1', '2' } },
+				{ "XC12",  new[] { '1', '2' } },
+				{ "123XC", new[] { '1', '2', '3' } },
+				{ "321X",  new[] { '3', '2', '1' } },
+				{ "3V2C1X",  new[] { '3', '2', '1' } },
+			};
+
+			foreach (var pair in testCases2)
+			{
+				var ex = Assert.ThrowsException<ArgumentException>(() => RomanNumber.Parse(pair.Key));
+				foreach (char c in pair.Value)
+				{
+					Assert.IsTrue(ex.Message.Contains($"'{c}'"),$"Roman number parse ({pair.Key}): ex.Message contains '{c}'");
+				}
+			}
+		}
+
+		[TestMethod]
+		public void TestToString()
+		{
+			Dictionary<int, string> testCases = new()
+			{
+				{0,"N"},
+				{1, "I"},
+				{2, "II"},
+				{3, "III"},
+				{4, "IV"},
+				{ -45, "-XLV"},
+				{-95,  "-XCV"},
+				{-285, "-CCLXXXV"},
+			};
+
+
+			foreach (var testCase in testCases)
+			{
+				var roman = new RomanNumber(testCase.Key);
+				Assert.AreEqual(roman.ToString(), testCase.Value);
+			}
+
+			var rnd = new Random();
+
+			for (int i = 0; i < 10; i++)
+			{
+				int testCase = rnd.Next(500);
+				var roman = new RomanNumber(testCase);
+				Assert.IsNotNull(testCase);
+				Assert.AreEqual(testCase, RomanNumber.Parse(roman.ToString()).Value);
+			}
+
+
+
+		}
 	}
 }

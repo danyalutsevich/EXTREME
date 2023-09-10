@@ -3,4 +3,4 @@ using Code;
 
 Console.WriteLine("Hello, World!");
 
-RomanNumber.Parse("A");
+RomanNumber.Parse("ABCERTYUI");
