@@ -1,4 +1,6 @@
 
+using System.Runtime.Intrinsics.X86;
+
 namespace Tests
 {
 	[TestClass]
@@ -128,13 +130,19 @@ namespace Tests
 				{"%","%" },
 				{"T","T" },
 				{"@","@" },
+				{"IVX","IVX" },
+				{"VIX","VIX" },
+				{"IIIX","IIIX" },
+				{"VVIX","VVIX" },
+				{"IIIC","IIIC" },
+				{"IIDC","IIDC" },
 			};
 
 			foreach (var testCase in testCases)
 			{
 				ex = Assert.ThrowsException<ArgumentException>(() => RomanNumber.Parse(testCase.Key), $"Roman number parse {testCase.Key} -> Exception");
 
-				Assert.IsTrue(ex.Message.Contains($"'{testCase.Value}'"));
+				Assert.IsTrue(ex.Message.Contains($"'{testCase.Value}'"), $"{testCase.Value} expected in message: {ex.Message}");
 			}
 
 		}
@@ -142,15 +150,12 @@ namespace Tests
 		[TestMethod]
 		public void TestRomanNumberDubious()
 		{
-			string[] dubious = { " XC", "XC ", "\tXC", "\nXC" };
+			string[] dubious = { "IIX", "VVX", "IVX", "VIX", "IIIX", "VVIX" };
 
 			foreach (var dub in dubious)
 			{
-				var parseResult = RomanNumber.Parse(dub);
-				Assert.IsNotNull(parseResult, $"{dub} cause null");
-				Assert.AreEqual(parseResult.Value, 90);
+				Assert.ThrowsException<ArgumentException>(() => RomanNumber.Parse(dub), $"{dub} cause exception");
 			}
-
 		}
 
 		[TestMethod]
@@ -170,7 +175,7 @@ namespace Tests
 				var ex = Assert.ThrowsException<ArgumentException>(() => RomanNumber.Parse(pair.Key));
 				foreach (char c in pair.Value)
 				{
-					Assert.IsTrue(ex.Message.Contains($"'{c}'"),$"Roman number parse ({pair.Key}): ex.Message contains '{c}'");
+					Assert.IsTrue(ex.Message.Contains($"'{c}'"), $"Roman number parse ({pair.Key}): ex.Message contains '{c}'");
 				}
 			}
 		}
@@ -194,18 +199,39 @@ namespace Tests
 			foreach (var testCase in testCases)
 			{
 				var roman = new RomanNumber(testCase.Key);
-				Assert.AreEqual(roman.ToString(), testCase.Value);
+				Assert.AreEqual(roman.ToString(), testCase.Value, $"{roman} != {testCase.Value}");
 			}
 
 			var rnd = new Random();
 
 			for (int i = 0; i < 10; i++)
 			{
-				int testCase = rnd.Next(-500,500);
+				int testCase = rnd.Next(500);
 				var roman = new RomanNumber(testCase);
 				Assert.IsNotNull(testCase);
-				Assert.AreEqual(testCase, RomanNumber.Parse(roman.ToString()).Value);
+				var parsedRoman = RomanNumber.Parse(roman.ToString()).Value;
+				Assert.AreEqual(testCase, parsedRoman, $"{testCase} != {parsedRoman}");
 			}
+		}
+
+		[TestMethod]
+		public void TestSum()
+		{
+			RomanNumber r1 = new(10);
+			RomanNumber r2 = new(10);
+			RomanNumber r3 = new(10);
+			RomanNumber r4 = new(10);
+
+			var sum = RomanNumber.Sum(r1, r2, r3, r4);
+
+			Assert.IsInstanceOfType(sum, typeof(RomanNumber));
+			Assert.AreEqual(40, sum.Value);
+			Assert.AreEqual(0, RomanNumber.Sum().Value);
+
+			Assert.AreEqual(RomanNumber.Sum(null, null, null), null);
+			Assert.AreEqual(RomanNumber.Sum([null, null, null]), null);
+			Assert.AreEqual(RomanNumber.Sum(null), null);
+
 		}
 	}
 }

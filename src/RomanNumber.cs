@@ -29,10 +29,8 @@ namespace Code
 
 		public static RomanNumber Parse(string roman)
 		{
-			if (String.IsNullOrEmpty(roman))
-			{
-				throw new ArgumentException("Roman number is null or Empty");
-			}
+			IsValid(roman);
+			IsLegal(roman);
 
 			int result = 0;
 			int prev = 0;
@@ -40,21 +38,8 @@ namespace Code
 			roman = roman.Replace("-", "");
 			roman = roman.Trim();
 
-			if (string.IsNullOrEmpty(roman))
-			{
-				throw new ArgumentException("Input is null or empty");
-			}
-
-			ValidateNumber(roman);
-
 			for (int i = roman.Length - 1; i >= 0; i--)
 			{
-
-				if (!romanValues.Keys.Any((key) => key == roman[i]))
-				{
-					throw new ArgumentException($"'{roman[i]}' is an invalid symbol");
-				}
-
 				int current = romanValues[roman[i]];
 
 				if (current < prev)
@@ -72,8 +57,13 @@ namespace Code
 			return new(lastDigitIndex == 0 ? result : -result);
 		}
 
-		private static bool ValidateNumber(string roman)
+		private static bool IsValid(string roman)
 		{
+			if (String.IsNullOrEmpty(roman))
+			{
+				throw new ArgumentException(ExceptionMessages.NullOrEmpty);
+			}
+
 			List<char> invalid = new List<char>();
 
 			foreach (var number in roman)
@@ -86,8 +76,34 @@ namespace Code
 
 			if (invalid.Count > 0)
 			{
-				string invalidChars = string.Join(", ", invalid.Select(val => $"'{val}'").ToArray());
-				throw new ArgumentException($"Invalid numbers found in input {invalidChars}");
+				throw new ArgumentException(ExceptionMessages.InvalidNumbersMessage(invalid));
+			}
+
+			return true;
+		}
+
+		private static bool IsLegal(string roman)
+		{
+			int maxDigit = 0;
+			int consecutiveLessCount = 0;
+
+			foreach (char digitChar in roman.Reverse())
+			{
+				int digitValue = romanValues[digitChar];
+
+				if (digitValue < maxDigit)
+				{
+					consecutiveLessCount++;
+					if (consecutiveLessCount > 1)
+					{
+						throw new ArgumentException(ExceptionMessages.InvalidSequence(roman));
+					}
+				}
+				else
+				{
+					maxDigit = digitValue;
+					consecutiveLessCount = 0;
+				}
 			}
 
 			return true;
@@ -132,8 +148,36 @@ namespace Code
 
 			return roman;
 		}
+
+		public RomanNumber Plus(RomanNumber r2)
+		{
+			return new RomanNumber(Value + r2.Value);
+		}
+
+		public RomanNumber Minus(RomanNumber r2)
+		{
+			return new RomanNumber(Value - r2.Value);
+		}
+
+		public static RomanNumber? Sum(params RomanNumber[] romans)
+		{
+			if (romans.Length == 0)
+			{
+				return new(0);
+			}
+
+			if (romans.Equals(null) || romans.All((roman) => roman == null))
+			{
+				return null;
+			}
+
+			var resRoman = new RomanNumber(0);
+			foreach (var roman in romans)
+			{
+				resRoman.Value += roman.Value;
+			}
+			return resRoman;
+		}
+
 	}
-
-
-
 }
