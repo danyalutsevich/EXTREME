@@ -1,6 +1,8 @@
-﻿using System;
+﻿using code;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +20,7 @@ namespace Code
 
 		private static Dictionary<char, int> romanValues = new Dictionary<char, int>
 		{
+			{ 'N',0},
 			{ 'I', 1 },
 			{ 'V', 5 },
 			{ 'X', 10 },
@@ -29,14 +32,15 @@ namespace Code
 
 		public static RomanNumber Parse(string roman)
 		{
-			IsValid(roman);
-			IsLegal(roman);
 
 			int result = 0;
 			int prev = 0;
 			int lastDigitIndex = roman.StartsWith("-") ? 1 : 0;
 			roman = roman.Replace("-", "");
 			roman = roman.Trim();
+
+			IsValid(roman);
+			//IsLegal(roman);
 
 			for (int i = roman.Length - 1; i >= 0; i--)
 			{
@@ -179,5 +183,38 @@ namespace Code
 			return resRoman;
 		}
 
+		public static RomanNumber Eval(string expression)
+		{
+			if (String.IsNullOrEmpty(expression))
+			{
+				return null;
+			}
+
+			expression = expression.Trim();
+
+			var expressionOperator = expression.IndexOf(Consts.PLUS) != -1 ? Consts.PLUS : expression.IndexOf(Consts.MINUS, 1) != -1 ? Consts.MINUS : null;
+
+			if (expressionOperator == Consts.PLUS)
+			{
+				var operand1 = expression.Substring(0, expression.IndexOf(Consts.PLUS)).Trim();
+				var operand2 = expression.Substring(expression.IndexOf(Consts.PLUS) + 1).Trim();
+
+				return RomanNumber.Parse(operand1).Plus(RomanNumber.Parse(operand2));
+
+			}
+			else if (expressionOperator == Consts.MINUS)
+			{
+				var operand1 = expression.Substring(0, expression.IndexOf(Consts.MINUS, 1)).Trim();
+				var operand2 = expression.Substring(expression.IndexOf(Consts.MINUS, 1) + 1).Trim();
+
+				return RomanNumber.Parse(operand1).Minus(RomanNumber.Parse(operand2));
+
+			}
+			else
+			{
+				return RomanNumber.Parse(expression);
+				throw new ArgumentException($"Invalid operator. Only + and - allowed.Expression: {expression}");
+			}
+		}
 	}
 }

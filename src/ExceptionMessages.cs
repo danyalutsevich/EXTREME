@@ -14,7 +14,7 @@ namespace Code
 
 		}
 
-		public static string NullOrEmpty;
+		public static string NullOrEmpty = "Roman number is null or Empty";
 
 		public static string InvalidNumbersMessage(List<char> invalid)
 		{

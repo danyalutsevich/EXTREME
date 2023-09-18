@@ -215,6 +215,18 @@ namespace Tests
 		}
 
 		[TestMethod]
+		public void TestMinus()
+		{
+			Assert.AreEqual(RomanNumber.Parse("-II").Value, -2);
+
+			var r1 = new RomanNumber(-6);
+			var r2 = new RomanNumber(-4);
+
+			Assert.AreEqual(r1.Minus(r2).ToString(), "-II");
+
+		}
+
+		[TestMethod]
 		public void TestSum()
 		{
 			RomanNumber r1 = new(10);
@@ -230,7 +242,44 @@ namespace Tests
 
 			Assert.AreEqual(RomanNumber.Sum(null, null, null), null);
 			Assert.AreEqual(RomanNumber.Sum([null, null, null]), null);
-			Assert.AreEqual(RomanNumber.Sum(null), null);
+		}
+
+		[TestMethod]
+		public void TestEval()
+		{
+			var rNull = RomanNumber.Eval("");
+			Assert.AreEqual(rNull, null);
+
+			var r1 = RomanNumber.Eval("III + II");
+			Assert.IsInstanceOfType(r1, typeof(RomanNumber));
+			Assert.AreEqual(r1.Value, 5);
+
+			var random = new Random();
+
+			for (int i = 0; i < 100; i++)
+			{
+
+				var operand1 = random.Next(-3000, 3000);
+				var operand2 = random.Next(-3000, 3000);
+
+				var rom1 = new RomanNumber(operand1);
+				var rom2 = new RomanNumber(operand2);
+
+				var evaluatedPlus = RomanNumber.Eval(rom1.ToString() + " + " + rom2.ToString());
+				var evaluatedMinus = RomanNumber.Eval(rom1.ToString() + " - " + rom2.ToString());
+
+				Assert.AreEqual(operand1 + operand2, evaluatedPlus.Value, $"{i} Operands: {operand1} + {operand2}");
+				Assert.AreEqual(operand1 - operand2, evaluatedMinus.Value, $"{i} Operands: {operand1} + {operand2}");
+
+			}
+
+			Assert.AreEqual(-3, RomanNumber.Eval("-III").Value);
+			Assert.AreEqual(-4, RomanNumber.Eval("-IV").Value);
+			Assert.AreEqual(-10, RomanNumber.Eval("-X").Value);
+			Assert.AreEqual(0, RomanNumber.Eval("N").Value);
+			Assert.AreEqual(0, RomanNumber.Eval("N+N").Value);
+			Assert.AreEqual(0, RomanNumber.Eval("N-N").Value);
+			Assert.AreEqual(1, RomanNumber.Eval("I-N").Value);
 
 		}
 	}

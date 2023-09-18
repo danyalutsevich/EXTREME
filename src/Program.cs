@@ -2,6 +2,7 @@
 using Code;
 
 
-Console.WriteLine(RomanNumber.Parse("X"));
+Console.WriteLine(RomanNumber.Parse("-MMDCXC"));
+Console.WriteLine(RomanNumber.Parse("LVIII"));
 var roman = new RomanNumber(-4);
 Console.WriteLine(roman.ToString());
